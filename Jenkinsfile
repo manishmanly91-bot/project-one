@@ -2,14 +2,14 @@ pipeline {
   agent any
 
   environment {
-    IMAGE_NAME = "project-one"
+    DOCKER_IMAGE = "manly111/project-one"
     TAG = "latest"
   }
 
   stages {
     stage('Build Docker Image') {
       steps {
-        sh 'docker build -t $IMAGE_NAME:$TAG .'
+        sh 'docker build -t $DOCKER_IMAGE:$TAG .'
       }
     }
   }
