@@ -1,23 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: node-app-deployment
+  name: project-one
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: node-app
+      app: project-one
   template:
     metadata:
       labels:
-        app: node-app
+        app: project-one
     spec:
       containers:
-        - name: node-app
-          image: project-one
-          imagePullPolicy: IfNotPresent
+        - name: project-one
+          image: manly111/project-one:latest
           ports:
-            - containerPort: 4000
+            - containerPort: 3000
           env:
             - name: PORT
-              value: "4000"
+              value: "3000"
