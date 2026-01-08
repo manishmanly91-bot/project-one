@@ -35,10 +35,17 @@ pipeline {
       steps {
         checkout scm
         bat '''
-          set KUBECONFIG=C:\\jenkins-agent\\.kube\\config
-
+          REM Use the Windows agent user's kubeconfig (avoids stale copied config)
+          set "KUBECONFIG=%USERPROFILE%\\.kube\\config"
           echo Using KUBECONFIG=%KUBECONFIG%
-          kubectl config current-context
+
+          REM Ensure Minikube is running and kubeconfig is updated (fixes 127.0.0.1:<oldPort> refused)
+          minikube status -p minikube || minikube start -p minikube --driver=docker
+          minikube update-context -p minikube
+
+          kubectl config use-context minikube
+          kubectl config view --minify | findstr server
+
           kubectl get nodes
 
           kubectl apply -f deployment.yaml
