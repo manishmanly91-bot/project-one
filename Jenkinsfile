@@ -11,23 +11,11 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
+    stage('Build & Push') {
       agent { label '!windows' }
       steps {
         checkout scm
-      }
-    }
-
-    stage('Build Docker Image') {
-      agent { label '!windows' }
-      steps {
         sh 'docker build -t $DOCKER_IMAGE:$TAG .'
-      }
-    }
-
-    stage('Push to Docker Hub') {
-      agent { label '!windows' }
-      steps {
         withCredentials([usernamePassword(
           credentialsId: 'Manly99',
           usernameVariable: 'DOCKER_USER',
