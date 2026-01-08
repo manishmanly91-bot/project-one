@@ -15,6 +15,7 @@ spec:
       containers:
         - name: project-one
           image: manly111/project-one:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:
