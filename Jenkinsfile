@@ -1,19 +1,32 @@
 pipeline {
-  agent any
+  agent none
 
   environment {
     DOCKER_IMAGE = "manly111/project-one"
     TAG = "latest"
   }
 
+  options {
+    skipDefaultCheckout(true)
+  }
+
   stages {
+    stage('Checkout') {
+      agent { label '!windows' }
+      steps {
+        checkout scm
+      }
+    }
+
     stage('Build Docker Image') {
+      agent { label '!windows' }
       steps {
         sh 'docker build -t $DOCKER_IMAGE:$TAG .'
       }
     }
 
     stage('Push to Docker Hub') {
+      agent { label '!windows' }
       steps {
         withCredentials([usernamePassword(
           credentialsId: 'Manly99',
@@ -26,6 +39,19 @@ pipeline {
             docker logout
           '''
         }
+      }
+    }
+
+    stage('Deploy to Kubernetes') {
+      agent { label 'windows' }
+      steps {
+        checkout scm
+        bat '''
+          kubectl apply -f deployment.yaml
+          kubectl apply -f service.yaml
+          kubectl rollout restart deployment/project-one
+          kubectl rollout status deployment/project-one --timeout=120s
+        '''
       }
     }
   }
