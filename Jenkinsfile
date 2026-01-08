@@ -35,6 +35,12 @@ pipeline {
       steps {
         checkout scm
         bat '''
+          set KUBECONFIG=C:\\jenkins-agent\\.kube\\config
+
+          echo Using KUBECONFIG=%KUBECONFIG%
+          kubectl config current-context
+          kubectl get nodes
+
           kubectl apply -f deployment.yaml
           kubectl apply -f service.yaml
           kubectl rollout restart deployment/project-one
